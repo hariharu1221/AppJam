@@ -366,7 +366,6 @@ MonoBehaviour:
   leftKey:
     onekey: 276
     value: -1
-  CurGem: 0
 --- !u!1 &611243978
 GameObject:
   m_ObjectHideFlags: 0
@@ -1373,9 +1372,8 @@ MonoBehaviour:
     onekey: 119
     value: 15
   rightKey:
-    onekey: 97
-    value: -1
-  leftKey:
     onekey: 100
     value: 1
-  CurGem: 0
+  leftKey:
+    onekey: 97
+    value: -1
