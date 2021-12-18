@@ -15,7 +15,16 @@ public class Player : MonoBehaviour
     [SerializeField] OneKey rightKey;
     [SerializeField] OneKey leftKey;
 
-    int CurGem = 0;
+    int curGem = 0;
+    public int CurGem
+    {
+        get { return curGem; }
+        set 
+        {
+            if (value < 0) curGem = 0;
+            else curGem = value; 
+        }
+    }
     int jumpCount = 0;
 
     Rigidbody2D rigid;
