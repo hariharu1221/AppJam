@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField] OneKey rightKey;
     [SerializeField] OneKey leftKey;
 
+    public int CurGem = 0;
+
     int jumpCount = 0;
 
     Rigidbody2D rigid;
@@ -90,6 +92,15 @@ public class Player : MonoBehaviour
     {
         get { return isStop; }
         set { isStop = value; }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Gem"))
+        {
+            Destroy(collision.gameObject);
+            CurGem += 1;
+        }
     }
 }
 
