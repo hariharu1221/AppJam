@@ -43,6 +43,10 @@ public class Player : MonoBehaviour
     private int jumpCount = 0;
     public bool isDead = false;
 
+    public AudioClip jumpSFX;
+    public AudioClip attackSFX;
+
+
     private Rigidbody2D rigid;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
@@ -67,6 +71,7 @@ public class Player : MonoBehaviour
         InputKey();
         isMove();
         PlayerDead();
+        
     }
 
     void InputKey()
@@ -82,6 +87,8 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(jumpKey.onekey) && jumpCount < status.MaxJumpCount)
         {
+            SoundManager.instance.SFXPlay("Jump", jumpSFX);//효과음
+
             rigid.velocity = new Vector2(rigid.velocity.x, 0);
             rigid.AddForce(Vector2.up * jumpKey.value, ForceMode2D.Impulse);
             animator.SetTrigger("doJumping");
@@ -112,6 +119,8 @@ public class Player : MonoBehaviour
         {
             StartCoroutine(attackKey.Cool());
             animator.SetTrigger("doAttack");
+        
+           
         }
     }
 
@@ -270,6 +279,8 @@ public class Player : MonoBehaviour
             float damage = p.ColTriggerDamage(other);
             status.Hp -= CheckDefense(damage, status.Defense);
             Debug.Log(gameObject.name + status.Hp);
+
+            SoundManager.instance.SFXPlay("Attack", attackSFX);
         }
     }
     

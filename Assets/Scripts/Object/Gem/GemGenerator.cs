@@ -10,6 +10,7 @@ public class GemGenerator : MonoBehaviour
     public float gemTimer;
     public GameObject[] gems;
     public Animator anim;
+    public AudioClip clip; // 생성효과음
     //#endregion
 
     void Start()
@@ -26,7 +27,7 @@ public class GemGenerator : MonoBehaviour
             int r = UnityEngine.Random.Range(0, gems.Length);
             Instantiate(gems[r], new Vector3(-0.5f, 0.5f, 0), Quaternion.identity);
             anim.Play("PrinterAnim");
-
+            SoundManager.instance.SFXPlay("MakeGem", clip); //생성 효과음
             yield return new WaitForSeconds(T);
         }
     }
