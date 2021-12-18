@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
 {
     [Header("스테이터스")]
     [SerializeField] private Status status;
+    public Status GetStatus { get { return status; } }
 
     [Header("점프키")]
     [SerializeField] private OneKey jumpKey;
@@ -22,6 +23,9 @@ public class Player : MonoBehaviour
     [SerializeField] private OneKey skillOneKey;
     [SerializeField] private OneKey skillTwoKey;
     [SerializeField] private OneKey skillThrKey;
+    public OneKey SkillOneKey { get { return skillOneKey; } }
+    public OneKey SkillTwoKey { get { return skillTwoKey; } }
+    public OneKey SkillThrKey { get { return skillThrKey; } }
 
     [Header("머터리얼")]
     public MaterialData MTData;
@@ -91,12 +95,12 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0.5f * rigid.velocity.normalized.x, rigid.velocity.y);
         if (Input.GetKey(rightKey.onekey)) //움직임
         {
-            spriteRenderer.flipX = rightKey.value == 1 ? false : true;
+            transform.rotation = Quaternion.Euler(new Vector3(0, rightKey.value == 1 ? 0 : 180, 0));
             h = rightKey.value;
         }
         else if (Input.GetKey(leftKey.onekey))
         {
-            spriteRenderer.flipX = leftKey.value == 1 ? false : true;
+            transform.rotation = Quaternion.Euler(new Vector3(0, leftKey.value == 1 ? 0 : 180, 0));
             h = leftKey.value;
         }
         else h = 0;
@@ -139,7 +143,7 @@ public class Player : MonoBehaviour
     {
         spriteRenderer.material = MTData.materials[1];
         yield return new WaitForSeconds(0.15f);
-        Vector3 vec = Vector2.right * (spriteRenderer.flipX ? -1 : 1) * skillOneKey.value;
+        Vector3 vec = Vector2.right * (transform.rotation.eulerAngles.y == 180 ? -1 : 1) * skillOneKey.value;
         transform.position += vec;
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.material = MTData.materials[0];
@@ -193,7 +197,11 @@ public class Player : MonoBehaviour
         rayHit[2] = Physics2D.Raycast(rigid.position + Vector2.right * -0.5f, Vector3.down, 1f, LayerMask.GetMask("Ground"));
         var check = Array.Exists(rayHit, x => x.collider != null);
 
-        if (rigid.velocity.y < 0 && check) jumpCount = 0; //닿았으면 점프 카운트 초기화
+        if (rigid.velocity.y < 0 && check && jumpCount >= 1)
+        {
+            jumpCount = 0; //닿았으면 점프 카운트 초기화
+            animator.SetTrigger("jumpDown");
+        }
     }
 
     void PlayerDead()
@@ -289,10 +297,7 @@ public class OneKey
         get
         {
             if (!canPress) return KeyCode.None;
-            else
-            {
-                return key;
-            }
+            else return key;
         }
         set { key = value; }
     }
@@ -300,11 +305,20 @@ public class OneKey
     [SerializeField] private float cool = 1f;
     public float getcool { get { return cool; } }
 
+    private float nowCool;
+    public float NowCool { get { return nowCool; } }
+
     bool canPress = true;
     public IEnumerator Cool()
     {
         canPress = false;
-        yield return new WaitForSeconds(cool);
+        nowCool = cool;
+        while (nowCool > 0)
+        {
+            nowCool -= Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        nowCool = 0;
         canPress = true;
     }
 }
