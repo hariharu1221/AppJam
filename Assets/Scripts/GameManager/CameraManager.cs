@@ -82,8 +82,8 @@ public class CameraManager : MonoBehaviour
         if (InPlayer == P1) OutPlayer = P2;
         else OutPlayer = P1;
 
-        P1.GetComponent<Player>().IsStop = true;
-        P2.GetComponent<Player>().IsStop = true;
+        //P1.GetComponent<Player>().IsStop = true;
+        //P2.GetComponent<Player>().IsStop = true;
 
         float distance = Utils.Distance(InPlayer.transform.position.x, OutPlayer.transform.position.x) - 2;
 

@@ -182,8 +182,6 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsStop) return;
-
         rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse); //이동
 
         if (rigid.velocity.x > status.Speed)    //최대 움직임 속도 처리

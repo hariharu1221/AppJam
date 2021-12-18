@@ -36,9 +36,9 @@ public class UIManager : MonoBehaviour
     {
         InGameUIClass UI = new InGameUIClass();
         UI.HpBar = Ob.transform.Find("Frame").GetChild(0).GetComponent<Image>();
-        UI.SkillOne = Ob.transform.Find("SkillOne").GetChild(0).GetComponent<Image>();
-        UI.SkillTwo = Ob.transform.Find("SkillTwo").GetChild(0).GetComponent<Image>();
-        UI.SkillThree = Ob.transform.Find("SkillThree").GetChild(0).GetComponent<Image>();
+        UI.SkillOne = Ob.transform.Find("SkillOne").GetChild(1).GetComponent<Image>();
+        UI.SkillTwo = Ob.transform.Find("SkillTwo").GetChild(1).GetComponent<Image>();
+        UI.SkillThree = Ob.transform.Find("SkillThree").GetChild(1).GetComponent<Image>();
         if (p == 1) P1UI = UI;
         if (p == 2) P2UI = UI;
     }
