@@ -5,6 +5,8 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    public int CurGem = 0;
+
     [Header("스테이터스")]
     [SerializeField] private Status status;
 
@@ -80,6 +82,19 @@ public class Player : MonoBehaviour
         if (rigid.velocity.y < 0 && check)
                 jumpCount = 0;
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+         if(collision.gameObject.CompareTag("Gem"))
+            {
+                Destroy(collision.gameObject);
+                CurGem += 1;
+            }
+    }
+
+
+
+
 }
 
 [System.Serializable]
