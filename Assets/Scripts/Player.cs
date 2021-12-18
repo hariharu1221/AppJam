@@ -16,22 +16,26 @@ public class Player : MonoBehaviour
     [SerializeField] OneKey rightKey;
     [SerializeField] OneKey leftKey;
 
+    public int CurGem = 0;
+
     int jumpCount = 0;
 
-    Rigidbody2D rigid; 
+    Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
     Animator animator;
 
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody2D>(); 
-        spriteRenderer = GetComponent<SpriteRenderer>(); 
+        rigid = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
 
     float h;
     void Update()
     {
+        if (IsStop) return;
+
         if (Input.GetKeyDown(jumpKey.onekey) && jumpCount < status.MaxJumpCount)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, 0);
@@ -64,6 +68,8 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (IsStop) return;
+
         rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
 
         if (rigid.velocity.x > status.Speed)
@@ -79,7 +85,23 @@ public class Player : MonoBehaviour
         var check = Array.Exists(rayHit, x => x.collider != null);
 
         if (rigid.velocity.y < 0 && check)
-                jumpCount = 0;
+            jumpCount = 0;
+    }
+
+    bool isStop = false;
+    public bool IsStop
+    {
+        get { return isStop; }
+        set { isStop = value; }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Gem"))
+        {
+            Destroy(collision.gameObject);
+            CurGem += 1;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
