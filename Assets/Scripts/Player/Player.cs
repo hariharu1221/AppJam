@@ -15,7 +15,8 @@ public class Player : MonoBehaviour
     [SerializeField] OneKey rightKey;
     [SerializeField] OneKey leftKey;
 
-    int curGem = 0;
+
+    public int curGem = 0;
     public int CurGem
     {
         get { return curGem; }
@@ -36,8 +37,14 @@ public class Player : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+
+
     }
 
+    private void Start()
+    {
+        DropGem = GameObject.Find("GemGenerator").GetComponent<GemGenerator>().gems;
+    }
     float h;
     void Update()
     {
@@ -71,6 +78,9 @@ public class Player : MonoBehaviour
             animator.SetBool("isRunning", false);
         else
             animator.SetBool("isRunning", true);
+
+
+        PlayerDead();
     }
 
     void FixedUpdate()
@@ -102,12 +112,32 @@ public class Player : MonoBehaviour
         set { isStop = value; }
     }
 
+    public bool isDead = false;
+    GameObject[] DropGem;
+    void PlayerDead()
+    {
+        if(isDead)
+        {
+            if (curGem > 0)
+            {
+                int r = UnityEngine.Random.Range(0, DropGem.Length);
+                Instantiate(DropGem[r],new Vector2(transform.position.x,transform.position.y+2), Quaternion.identity);
+                curGem -= 1;
+            }
+
+
+            Debug.Log("»ç¸Á");
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Gem"))
         {
             Destroy(collision.gameObject);
             CurGem += 1;
+
+            Debug.Log(curGem);
         }
     }
 }

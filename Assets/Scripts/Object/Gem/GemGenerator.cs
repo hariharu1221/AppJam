@@ -6,13 +6,15 @@ using System;
 public class GemGenerator : MonoBehaviour
 {
 
-    #region GemSpawn
+    //#region GemGenerator
     public float gemTimer;
     public GameObject[] gems;
-    #endregion
+    public Animator anim;
+    //#endregion
 
     void Start()
     {
+        anim = GetComponentInChildren<Animator>();
         StartCoroutine(SpawnGem(gemTimer));
     }
 
@@ -23,6 +25,8 @@ public class GemGenerator : MonoBehaviour
            // Debug.Log("보석소환");
             int r = UnityEngine.Random.Range(0, gems.Length);
             Instantiate(gems[r], new Vector3(-0.5f, 0.5f, 0), Quaternion.identity);
+            anim.Play("PrinterAnim");
+
             yield return new WaitForSeconds(T);
         }
     }
