@@ -6,12 +6,12 @@ public class CameraManager : MonoBehaviour
 {
     [SerializeField] GameObject P1;
     [SerializeField] GameObject P2;
-    [SerializeField] float camSpeed = 1;
-    [SerializeField] float camSizeSpeed = 0.5f;
-    [SerializeField] float maxCamSize = 7;
-    [SerializeField] float minCamSize = 5;
-    [SerializeField] float minCamY = -2;
-    [SerializeField] float maxCamY = 3;
+    [SerializeField] [Range(0.1f, 10)] float camSpeed = 1;
+    [SerializeField] [Range(0.1f, 10)] float camSizeSpeed = 0.5f;
+    [SerializeField] [Range(5, 20)] float maxCamSize = 7;
+    [SerializeField] [Range(5, 20)] float minCamSize = 5;
+    [SerializeField] [Range(-20, 20)] float minCamY = -2;
+    [SerializeField] [Range(-20, 20)] float maxCamY = 3;
     Camera camera;
     BoxCollider2D[] ArrayCol;
 

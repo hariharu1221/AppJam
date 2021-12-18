@@ -137,7 +137,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _fade: 1
-    - _tint_amount: 0.28406343
+    - _tint_amount: 0.035874333
     m_Colors:
     - Color_2886D8C2: {r: 0, g: 2.270603, b: 0.023775948, a: 1}
     - Color_B6EA48D3: {r: 0, g: 2, b: 1.0494151, a: 0}
