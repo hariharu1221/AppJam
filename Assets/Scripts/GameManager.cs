@@ -4,22 +4,35 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
-    [SerializeField] GameObject P1;
-    [SerializeField] GameObject P2;
+    static GameManager instance = null;
+
+    public int P1Gem;
+    public int P2Gem;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(Instance);
-
-        if (P1 == null) P1 = GameObject.Find("P1");
-        if (P2 == null) P2 = GameObject.Find("P2");
+        if(instance==null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    private void Update()
+    public static GameManager Instance
     {
-        
+        get
+        {
+            if(null==instance)
+            {
+                return null;
+            }
+            return instance;
+        }
     }
+
 
 }
