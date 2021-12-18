@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    static GameManager instance = null;
+    public static GameManager instance = null;
     [SerializeField] Bank Bank1;
     [SerializeField] Bank Bank2;
 
@@ -21,5 +21,14 @@ public class GameManager : MonoBehaviour
     {
         if (Bank1.BankGem >= 7) Debug.Log("P1 ÀÌ±ט!");
         else if (Bank2.BankGem >= 7) Debug.Log("P2 ÀÌ±ט!");
+    }
+
+    public int GetJam(string name)
+    {
+        if (name == "P1")
+            return Bank1.BankGem;
+        else if (name == "P2")
+            return Bank2.BankGem;
+        return 0;
     }
 }

@@ -105,9 +105,9 @@ public class CameraManager : MonoBehaviour
 
     IEnumerator InLayerAfterCamera()
     {
-        camSpeed *= 3;
+        camSpeed *= 10;
         yield return new WaitForSeconds(2f);
-        camSpeed /= 3;
+        camSpeed /= 10;
         P1.GetComponent<Player>().IsStop = false;
         P2.GetComponent<Player>().IsStop = false;
         isPlayerIn = false;

@@ -39,6 +39,7 @@ public class UIManager : MonoBehaviour
         UI.SkillOne = Ob.transform.Find("SkillOne").GetChild(1).GetComponent<Image>();
         UI.SkillTwo = Ob.transform.Find("SkillTwo").GetChild(1).GetComponent<Image>();
         UI.SkillThree = Ob.transform.Find("SkillThree").GetChild(1).GetComponent<Image>();
+        UI.Gem = Ob.transform.Find("Gem").GetComponent<Text>();
         if (p == 1) P1UI = UI;
         if (p == 2) P2UI = UI;
     }
@@ -49,6 +50,8 @@ public class UIManager : MonoBehaviour
         UI.SkillOne.fillAmount = P.SkillOneKey.NowCool / P.SkillOneKey.getcool;
         UI.SkillTwo.fillAmount = P.SkillTwoKey.NowCool / P.SkillTwoKey.getcool;
         UI.SkillThree.fillAmount = P.SkillThrKey.NowCool / P.SkillThrKey.getcool;
+        UI.Gem.text = GameManager.instance.GetJam(P.gameObject.name).ToString();
+        
     }
 }
 
@@ -59,4 +62,5 @@ public class InGameUIClass
     public Image SkillOne;
     public Image SkillTwo;
     public Image SkillThree;
+    public Text Gem;
 }
