@@ -2,89 +2,72 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.Audio;
 public class SoundManager : MonoBehaviour
 {
-    private static SoundManager instance;
-
-    public static SoundManager Instance
-    {
-        get
-        {
-
-            if (instance == null)
-            {
-                instance = FindObjectOfType<SoundManager>();
-            }
-
-            return instance;
-        }
-    }
-
-    private AudioSource bgmPlayer;
-    private AudioSource sfxPlayer;
-
-    public float masterVolumeSFX = 1f;
-    public float masterVolumeBGM = 1f;
-
+    public AudioMixer mixer;
     [SerializeField]
-    private AudioClip mainBgmAudioClip;
-    [SerializeField]
-    private AudioClip adventureBgmAudioClip;
+    public AudioSource bgSound;
+    public AudioClip[] bglist;
 
-    [SerializeField]
-    private AudioClip[] sfxAudioClips;
-
-    Dictionary<string, AudioClip> audioClipsDic = new Dictionary<string, AudioClip>();
-
+    public static SoundManager instance;
     private void Awake()
     {
-        if (Instance != this)
+        if(instance == null)
         {
-            Destroy(this.gameObject);
+            instance = this;
+            DontDestroyOnLoad(instance);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
-
-        DontDestroyOnLoad(this.gameObject);
-
-        bgmPlayer = GameObject.Find("BGMSoundPlayer").GetComponent<AudioSource>();
-        sfxPlayer = GameObject.Find("SFXSoundPlayer").GetComponent<AudioSource>();
-
-        foreach (AudioClip audioclip in sfxAudioClips)
+        else
         {
-            audioClipsDic.Add(audioclip.name, audioclip);
+            Destroy(gameObject);
         }
     }
 
-    public void PlaySFXSound(string name, float volume = 1f)
+    public void SFXPlay(string sfxName, AudioClip clip)
     {
-        if (audioClipsDic.ContainsKey(name) == false)
-        {
-            Debug.Log(name + " is not Contained audioClipsDic");
-            return;
-        }
-        sfxPlayer.PlayOneShot(audioClipsDic[name], volume * masterVolumeSFX);
+        GameObject go = new GameObject(sfxName+"Sound");
+        AudioSource audiosource = go.AddComponent<AudioSource>();
+        audiosource.outputAudioMixerGroup = mixer.FindMatchingGroups("SFX")[0];
+        audiosource.clip = clip;
+        audiosource.Play();
+
+        Destroy(go, clip.length);
+
+        //public AudioClip clip;                               원하는 효과음 위치에 넣어주셈
+        //SoundManager.instance.SFXPlay("Jump", clip);         (예시임)
     }
 
-    public void PlayBGMSound(float volume = 1f)
+    public void BgSoundPlay(AudioClip clip)
     {
-        bgmPlayer.loop = true;
-        bgmPlayer.volume = volume * masterVolumeBGM;
-
-        if (SceneManager.GetActiveScene().name == "TitleScene")
-        {
-            bgmPlayer.clip = mainBgmAudioClip;
-            bgmPlayer.Play();
-        }
-        else if (SceneManager.GetActiveScene().name == "InGameScene")
-        {
-            bgmPlayer.clip = adventureBgmAudioClip;
-            bgmPlayer.Play();
-        }
+        bgSound.outputAudioMixerGroup = mixer.FindMatchingGroups("BGSound")[0];
+        bgSound.clip = clip;
+        bgSound.loop = true;
+        bgSound.volume = 0.1f;
+        bgSound.Play();
     }
 
-    private void Start()
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        PlayBGMSound(0.2f);
+
+        for(int i =0; i<bglist.Length; i++)
+        {
+            if(arg0.name == bglist[i].name)
+            {
+                BgSoundPlay(bglist[i]);
+            }
+        }
+      
+    }
+
+    public void BGSoundVolume(float val)
+    {
+        mixer.SetFloat("BGSound", Mathf.Log10(val)*20);
+    }
+    public void SFXVolume(float val)
+    {
+        mixer.SetFloat("SFXVolume", Mathf.Log10(val) * 20);
     }
 }
 

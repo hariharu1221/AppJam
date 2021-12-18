@@ -1706,11 +1706,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f5a4ab5e9a6f074cbea24be7c1cb2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  masterVolumeSFX: 1
-  masterVolumeBGM: 1
-  mainBgmAudioClip: {fileID: 0}
-  adventureBgmAudioClip: {fileID: 8300000, guid: 5337ba64b4c058b4a852e3ebfb87c052, type: 3}
-  sfxAudioClips: []
+  bgSound: {fileID: 418222928}
+  bglist:
+  - {fileID: 8300000, guid: 5c025b682e3b7154b965d1ad427b64ec, type: 3}
+  - {fileID: 8300000, guid: 2c5771e11fece554fba1f082d8f7c1e5, type: 3}
 --- !u!4 &2069486334
 Transform:
   m_ObjectHideFlags: 0
