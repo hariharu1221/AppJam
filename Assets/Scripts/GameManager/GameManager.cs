@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject P1;
     [SerializeField] GameObject P2;
 
-
     private void Awake()
     {
         if (instance == null) instance = this;

@@ -1,29 +1,29 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 public class Player : MonoBehaviour
 {
-    [Header("½ºÅ×ÀÌÅÍ½º")]
+    [Header("ìŠ¤í…Œì´í„°ìŠ¤")]
     [SerializeField] private Status status;
 
-    [Header("Á¡ÇÁÅ°")]
+    [Header("ì í”„í‚¤")]
     [SerializeField] private OneKey jumpKey;
 
-    [Header("ÀÌµ¿Å°")]
+    [Header("ì´ë™í‚¤")]
     [SerializeField] private OneKey rightKey;
     [SerializeField] private OneKey leftKey;
 
-    [Header("¾îÅÃÅ°")]
+    [Header("ì–´íƒí‚¤")]
     [SerializeField] private OneKey attackKey;
 
-    [Header("½ºÅ³Å°")]
+    [Header("ìŠ¤í‚¬í‚¤")]
     [SerializeField] private OneKey skillOneKey;
     [SerializeField] private OneKey skillTwoKey;
     [SerializeField] private OneKey skillThrKey;
 
-    [Header("¸ÓÅÍ¸®¾ó")]
+    [Header("ë¨¸í„°ë¦¬ì–¼")]
     public MaterialData MTData;
 
     private int curGem = 0;
@@ -37,11 +37,14 @@ public class Player : MonoBehaviour
         }
     }
     private int jumpCount = 0;
+    public bool isDead = false;
 
     private Rigidbody2D rigid;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private BoxCollider2D attackRange;
+    private GameObject[] DropGem;
+    private GameObject camera;
 
     private void Awake()
     {
@@ -50,6 +53,8 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         attackRange = GetComponent<BoxCollider2D>();
         attackRange.enabled = false;
+        DropGem = GameObject.Find("GemGenerator").GetComponent<GemGenerator>().gems;
+        camera = GameObject.Find("Main Camera");
     }
 
     private float h;
@@ -57,6 +62,7 @@ public class Player : MonoBehaviour
     {
         InputKey();
         isMove();
+        PlayerDead();
     }
 
     void InputKey()
@@ -81,9 +87,9 @@ public class Player : MonoBehaviour
 
     void move()
     {
-        if (Input.GetKeyDown(rightKey.onekey) || Input.GetKeyDown(leftKey.onekey)) //velocity °ª Á¶Á¤
+        if (Input.GetKeyDown(rightKey.onekey) || Input.GetKeyDown(leftKey.onekey)) //velocity ê°’ ì¡°ì •
             rigid.velocity = new Vector2(0.5f * rigid.velocity.normalized.x, rigid.velocity.y);
-        if (Input.GetKey(rightKey.onekey)) //¿òÁ÷ÀÓ
+        if (Input.GetKey(rightKey.onekey)) //ì›€ì§ì„
         {
             spriteRenderer.flipX = rightKey.value == 1 ? false : true;
             h = rightKey.value;
@@ -107,7 +113,7 @@ public class Player : MonoBehaviour
 
     void isMove()
     {
-        if (Mathf.Abs(rigid.velocity.x) < 0.2)      //velocity °ªÀÌ 0.2 ÀÌ»óÀÌ¸é ¾Ö´Ï¸ŞÀÌ¼Ç
+        if (Mathf.Abs(rigid.velocity.x) < 0.2)      //velocity ê°’ì´ 0.2 ì´ìƒì´ë©´ ì• ë‹ˆë©”ì´ì…˜
             animator.SetBool("isRunning", false);
         else
             animator.SetBool("isRunning", true);
@@ -174,20 +180,63 @@ public class Player : MonoBehaviour
     {
         if (IsStop) return;
 
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse); //ÀÌµ¿
+        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse); //ì´ë™
 
-        if (rigid.velocity.x > status.Speed)    //ÃÖ´ë ¿òÁ÷ÀÓ ¼Óµµ Ã³¸®
+        if (rigid.velocity.x > status.Speed)    //ìµœëŒ€ ì›€ì§ì„ ì†ë„ ì²˜ë¦¬
             rigid.velocity = new Vector2(status.Speed, rigid.velocity.y);
         else if (rigid.velocity.x < status.Speed * (-1))
             rigid.velocity = new Vector2(status.Speed * (-1), rigid.velocity.y);
 
-        RaycastHit2D[] rayHit = new RaycastHit2D[3];    // ¹Ù´Ú¿¡ ´ê¾Ò´ÂÁö È®ÀÎ
+        RaycastHit2D[] rayHit = new RaycastHit2D[3];    // ë°”ë‹¥ì— ë‹¿ì•˜ëŠ”ì§€ í™•ì¸
         rayHit[0] = Physics2D.Raycast(rigid.position, Vector3.down, 1f, LayerMask.GetMask("Ground"));
         rayHit[1] = Physics2D.Raycast(rigid.position + Vector2.right * 0.5f, Vector3.down, 1f, LayerMask.GetMask("Ground"));
         rayHit[2] = Physics2D.Raycast(rigid.position + Vector2.right * -0.5f, Vector3.down, 1f, LayerMask.GetMask("Ground"));
         var check = Array.Exists(rayHit, x => x.collider != null);
 
-        if (rigid.velocity.y < 0 && check) jumpCount = 0; //´ê¾ÒÀ¸¸é Á¡ÇÁ Ä«¿îÆ® ÃÊ±âÈ­
+        if (rigid.velocity.y < 0 && check) jumpCount = 0; //ë‹¿ì•˜ìœ¼ë©´ ì í”„ ì¹´ìš´íŠ¸ ì´ˆê¸°í™”
+    }
+
+    void PlayerDead()
+    {
+        if (status.Hp <= 0) isDead = true;
+        if (isDead)
+        {
+            isDead = false;
+            status.Hp = status.Maxhp;
+            StartCoroutine(PlayerDeadCor());
+        }
+    }
+
+    IEnumerator PlayerDeadCor()
+    {
+        IsStop = true;
+        if (curGem > 0)
+        {
+            int r = UnityEngine.Random.Range(0, DropGem.Length);
+            Instantiate(DropGem[r], new Vector2(transform.position.x, transform.position.y + 2), Quaternion.identity);
+            curGem -= 1;
+        }
+
+        spriteRenderer.material = MTData.materials[3];
+        float cool = 0;
+        while (cool < 1f)
+        {
+            spriteRenderer.material.SetFloat("_fade", 1f - cool);
+            cool += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        yield return new WaitForSeconds(1f);
+        Vector3 vec = new Vector3(camera.transform.position.x, camera.transform.position.y, 0);
+        transform.position = vec;
+        IsStop = false;
+        while (cool > 0f)
+        {
+            spriteRenderer.material.SetFloat("_fade", 1f - cool);
+            cool -= Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        spriteRenderer.material = MTData.materials[0];
+        yield return new WaitForFixedUpdate();
     }
 
     private bool isStop = false;
@@ -199,7 +248,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Gem")) //Àë¿¡ ´ê¾ÒÀ¸¸é CurGem++;
+        if (other.gameObject.CompareTag("Gem")) //ì¼ì— ë‹¿ì•˜ìœ¼ë©´ CurGem++;
         {
             Destroy(other.gameObject);
             CurGem += 1;

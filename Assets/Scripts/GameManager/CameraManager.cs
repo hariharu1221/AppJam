@@ -12,6 +12,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] [Range(5, 20)] float minCamSize = 5;
     [SerializeField] [Range(-20, 20)] float minCamY = -2;
     [SerializeField] [Range(-20, 20)] float maxCamY = 3;
+    [SerializeField] float LayerInDistance = 14.5f;
     Camera camera;
     BoxCollider2D[] ArrayCol;
 
@@ -70,7 +71,7 @@ public class CameraManager : MonoBehaviour
             if (Mathf.Abs(camera.orthographicSize - camSize) < 0.01f)
                 camera.orthographicSize = camSize;
         }
-        Vector2 offset = new Vector2(16, 0) * camera.orthographicSize / 5;
+        Vector2 offset = new Vector2(LayerInDistance, 0) * camera.orthographicSize / 5;
         ArrayCol[0].offset = offset;
         ArrayCol[1].offset = -offset;
     }
