@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static GameManager Instance;
+    [SerializeField] GameObject P1;
+    [SerializeField] GameObject P2;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(Instance);
+
+        if (P1 == null) P1 = GameObject.Find("P1");
+        if (P2 == null) P2 = GameObject.Find("P2");
+    }
+
+    private void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
