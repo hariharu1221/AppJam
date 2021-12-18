@@ -6,13 +6,15 @@ public class CameraManager : MonoBehaviour
 {
     [SerializeField] GameObject P1;
     [SerializeField] GameObject P2;
-    [SerializeField] [Range(0.1f, 10)] float camSpeed = 1;
+    [SerializeField] [Range(0.1f, 10)] float camSpeed = 0.3f;
     [SerializeField] [Range(0.1f, 10)] float camSizeSpeed = 0.5f;
     [SerializeField] [Range(5, 20)] float maxCamSize = 7;
     [SerializeField] [Range(5, 20)] float minCamSize = 5;
     [SerializeField] [Range(-20, 20)] float minCamY = -2;
     [SerializeField] [Range(-20, 20)] float maxCamY = 3;
-    [SerializeField] float LayerInDistance = 14.5f;
+    [SerializeField] [Range(-20, 20)] float minCamX = -20;
+    [SerializeField] [Range(-20, 20)] float maxCamX = 20;
+    [SerializeField] float LayerInDistance = 14f;
     Camera camera;
     BoxCollider2D[] ArrayCol;
 
@@ -51,7 +53,7 @@ public class CameraManager : MonoBehaviour
 
     void camMove()
     {
-        float x = (P1.transform.position.x + P2.transform.position.x) / 2;
+        float x = Utils.setWithMaxMin(minCamX, maxCamX, (P1.transform.position.x + P2.transform.position.x) / 2);
         float y = Utils.setWithMaxMin(minCamY, maxCamY, (P1.transform.position.y + P2.transform.position.y) / 2) + camera.orthographicSize - 5 ;
         Vector3 pos = new Vector3(x, y, -10);
         camera.transform.position = Vector3.Lerp(camera.transform.position, pos, Time.deltaTime * camSpeed);
@@ -88,9 +90,15 @@ public class CameraManager : MonoBehaviour
         float distance = Utils.Distance(InPlayer.transform.position.x, OutPlayer.transform.position.x) - 2;
 
         if (transform.position.x < InPlayer.transform.position.x)
-            OutPlayer.transform.position = InPlayer.transform.position + new Vector3(distance, 0, 0);
+        {
+            if (transform.position.x + distance > maxCamX + 7) OutPlayer.transform.position = new Vector3(maxCamX, 5, 0);
+            else OutPlayer.transform.position = new Vector3(transform.position.x + distance, 5, 0);
+        }
         else
-            OutPlayer.transform.position = InPlayer.transform.position + new Vector3(-distance, 0, 0);
+        {
+            if (transform.position.x - distance > minCamY - 7) OutPlayer.transform.position = new Vector3(minCamY, 5, 0);
+            else OutPlayer.transform.position = new Vector3(transform.position.x - distance, 5, 0);
+        }
 
         StartCoroutine(InLayerAfterCamera());
     }

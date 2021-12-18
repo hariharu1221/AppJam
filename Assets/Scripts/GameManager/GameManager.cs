@@ -5,20 +5,21 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     static GameManager instance = null;
-    [SerializeField] GameObject P1;
-    [SerializeField] GameObject P2;
+    [SerializeField] Bank Bank1;
+    [SerializeField] Bank Bank2;
 
     private void Awake()
     {
         if (instance == null) instance = this;
         else Destroy(instance);
 
-        if (P1 == null) P1 = GameObject.Find("P1");
-        if (P2 == null) P2 = GameObject.Find("P2");
+        if (Bank1 == null) Bank1 = GameObject.Find("Bank1").GetComponent<Bank>();
+        if (Bank2 == null) Bank2 = GameObject.Find("Bank2").GetComponent<Bank>();
     }
 
     private void Update()
     {
-        
+        if (Bank1.BankGem >= 7) Debug.Log("P1 ÀÌ±ט!");
+        else if (Bank2.BankGem >= 7) Debug.Log("P2 ÀÌ±ט!");
     }
 }
