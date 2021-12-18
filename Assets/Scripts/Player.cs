@@ -5,7 +5,6 @@ using System;
 
 public class Player : MonoBehaviour
 {
-    public int CurGem = 0;
 
     [Header("스테이터스")]
     [SerializeField] private Status status;
@@ -88,7 +87,15 @@ public class Player : MonoBehaviour
          if(collision.gameObject.CompareTag("Gem"))
             {
                 Destroy(collision.gameObject);
-                CurGem += 1;
+                
+            if(this.gameObject.CompareTag("P1"))
+            {
+                GameManager.Instance.P1Gem += 1;
+            }
+            else if(this.gameObject.CompareTag("P2"))
+            {
+                GameManager.Instance.P2Gem += 1;
+            }
             }
     }
 

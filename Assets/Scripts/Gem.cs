@@ -20,7 +20,7 @@ public class Gem : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
 
         WhenSpawnGem(spawnForce.ForceX,spawnForce.ForceY);
-        Debug.Log(spawnForce.ForceX);
+        //Debug.Log(spawnForce.ForceX);
     }
 
 
