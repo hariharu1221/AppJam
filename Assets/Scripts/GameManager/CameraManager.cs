@@ -91,12 +91,12 @@ public class CameraManager : MonoBehaviour
 
         if (transform.position.x < InPlayer.transform.position.x)
         {
-            if (transform.position.x + distance > maxCamX + 7) OutPlayer.transform.position = new Vector3(maxCamX, 5, 0);
+            if (transform.position.x + distance > maxCamX + 5) OutPlayer.transform.position = new Vector3(maxCamX + 5, 5, 0);
             else OutPlayer.transform.position = new Vector3(transform.position.x + distance, 5, 0);
         }
         else
         {
-            if (transform.position.x - distance > minCamY - 7) OutPlayer.transform.position = new Vector3(minCamY, 5, 0);
+            if (transform.position.x - distance < minCamY - 5) OutPlayer.transform.position = new Vector3(minCamY - 5, 5, 0);
             else OutPlayer.transform.position = new Vector3(transform.position.x - distance, 5, 0);
         }
 
